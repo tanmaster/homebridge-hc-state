@@ -1,0 +1,22 @@
+{
+  "name": "homebridge-hc-state",
+  "version": "1.0.0",
+  "description": "Homebridge plugin to control the state of home-connect devices.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "homebridge": ">=0.2.5"
+  },
+  "dependencies": {
+    "request": ">=2.88.0",
+    "stream": ">=0.0.2",
+    "fs": ">=0.0.1-security"
+  },
+  "author": "Tan Yücel",
+  "license": "MIT"
+}
