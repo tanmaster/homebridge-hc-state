@@ -1,2 +1,10 @@
 # Project exclude paths
 /node_modules/
+/token/.idea/
+/token/home_connect_authenticate.egg-info/
+/token/venv/
+/token/secrets.json
+/token/token.json
+/curl_stream
+/ping.py
+/todo.txt
