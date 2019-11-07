@@ -51,7 +51,7 @@ class HCDevice {
         }, config);
         this.log = log;
 
-        if (this.config.id == null || this.config.tokenPath == null) {
+        if (this.config.haId == null || this.config.tokenPath == null) {
             throw new Error("Missing one or more required parameters.");
         }
 
