@@ -8,6 +8,7 @@ setup(
     install_requires=[
         'Flask-OAuthlib',
         'Flask',
+        "wtforms",
     ],
     license='MIT',
     author='Tan Yücel',

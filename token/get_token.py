@@ -7,9 +7,13 @@
 """
 import json
 import time
+import os
 
-from flask import Flask, redirect, url_for, session, request
+import requests
+from flask import Flask, render_template, request
+from flask import redirect, url_for, session
 from flask_oauthlib.client import OAuth
+from wtforms import Form, SelectField
 
 with open('secrets.json') as secret_file:
     secrets = json.load(secret_file)
@@ -37,11 +41,20 @@ hc = oauth.remote_app(
 )
 
 
+class ReusableForm(Form):
+    dropdown = SelectField(label="aaa", choices=[])
+
+
 @app.route('/')
 def index():
-    if 'hc_token' in session:
-        return hc.name
-    return redirect(url_for('login'))
+    return redirect(url_for('welcome'))
+
+
+@app.route("/welcome", methods=["GET", "POST"])
+def welcome():
+    if request.method == "POST":
+        return redirect(url_for("login"))
+    return render_template("welcome.html")
 
 
 @app.route('/login')
@@ -71,7 +84,30 @@ def authorized():
     with open('token.json', 'w') as fp:
         json.dump(resp, fp)
 
-    return "You can close this page now."
+    headers = {"accept": "application/vnd.bsh.sdk.v1+json", "Content-Type": "application/x-www-form-urlencoded",
+               "authorization": "Bearer " + resp["access_token"]}
+    b = requests.get("https://api.home-connect.com/api/homeappliances", headers=headers)
+    app.res = json.loads(b.content)
+    app.devices = [(i["haId"], i["brand"] + " " + i["name"] + ", " + i["haId"]) for i in
+                   app.res["data"]["homeappliances"]]
+    ReusableForm.dropdown = SelectField("Machines", choices=app.devices)
+    f = ReusableForm()
+    return render_template('form.html', form=f)
+
+
+@app.route("/finish", methods=["POST"])
+def finish():
+    haId = request.form['dropdown']
+    name = ""
+    for i in app.res["data"]["homeappliances"]:
+        if i["haId"] == haId:
+            name = i["brand"] + " " + i["name"]
+
+    output = {"accessory": "HCDevice",
+              "name": name,
+              "tokenPath": os.getcwd() + "/token.json",
+              "haId": haId}
+    return render_template("finished.html", content=json.dumps(output))
 
 
 @hc.tokengetter
