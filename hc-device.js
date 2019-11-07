@@ -46,12 +46,14 @@ class HCDevice {
     constructor(log, config) {
         this.config = Object.assign({
             name: 'My Home-Connect Device',
-            id: null,
-            secret: null,
-            ip: null,
-            tokenPath: "/Users/tanyucel/Desktop/homebridge-hc-state/token/token.json",
+            tokenPath: null,
+            haId: null,
         }, config);
         this.log = log;
+
+        if (this.config.id == null || this.config.tokenPath == null) {
+            throw new Error("Missing one or more required parameters.");
+        }
 
         this.status = Status.Inactive;
         // Read token file
@@ -82,7 +84,7 @@ class HCDevice {
             }
         };
         let self = this;
-        request("https://api.home-connect.com/api/homeappliances/BOSCH-CTL636ES6-68A40E19F02A/events", options)
+        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId + "/events", options)
             .on('response', (response) => {
                 this.log("Start listening to stream...")
             }).pipe(new Filter())
@@ -135,14 +137,14 @@ class HCDevice {
         };
 
         let self = this;
-        request("https://api.home-connect.com/api/homeappliances/BOSCH-CTL636ES6-68A40E19F02A", options,
+        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId, options,
             (err, res, body) => {
                 let result = JSON.parse(body);
                 if (!result.data.connected) self.setStatus(Status.Disconnected);
             });
 
 
-        request("https://api.home-connect.com/api/homeappliances/BOSCH-CTL636ES6-68A40E19F02A/status", options,
+        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId + "/status", options,
             (err, res, body) => {
                 let result = JSON.parse(body);
                 try {
@@ -271,7 +273,7 @@ class HCDevice {
                     }
                 })
         };
-        request("https://api.home-connect.com/api/homeappliances/BOSCH-CTL636ES6-68A40E19F02A/settings/BSH.Common.Setting.PowerState",
+        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId + "/settings/BSH.Common.Setting.PowerState",
             options).on('response', (response) => {
             this.log("HTTP Response Code from API: " + response.statusCode)
         });
