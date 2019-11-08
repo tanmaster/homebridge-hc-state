@@ -109,7 +109,7 @@ class HCDevice {
     setStatus(newStatus) {
         // Debouncing - only react to a change if it has actually changed
         if (newStatus !== this.status) {
-            this.log('NetworkDevice "%s" went from status "%s" to "%s"', this.config.name
+            this.log('HCDevice "%s" went from status "%s" to "%s"', this.config.name
                 , getValueOfSymbol(this.status), getValueOfSymbol(newStatus));
             this.status = newStatus;
 
@@ -233,10 +233,10 @@ class HCDevice {
         }
 
         if (shouldBeOnline) {
-            this.log('NetworkDevice awake cycle started for "%s"', this.config.name);
+            this.log('HCDevice awake cycle started for "%s"', this.config.name);
             this.switch(true);
         } else {
-            this.log('NetworkDevice shutdown cycle started for "%s"', this.config.name);
+            this.log('HCDevice shutdown cycle started for "%s"', this.config.name);
             this.switch(false);
         }
 
