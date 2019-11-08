@@ -81,7 +81,8 @@ def authorized():
     resp["client_id"] = app.config["ID"]
     resp["client_secret"] = app.config["SECRET"]
     resp['timestamp'] = time.time()
-    with open('token.json', 'w') as fp:
+    os.umask(0)
+    with open(os.open('token.json', os.O_CREAT | os.O_WRONLY, 0o777), 'w') as fp:
         json.dump(resp, fp)
 
     headers = {"accept": "application/vnd.bsh.sdk.v1+json", "Content-Type": "application/x-www-form-urlencoded",

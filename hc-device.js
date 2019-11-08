@@ -167,7 +167,7 @@ class HCDevice {
     }
 
     /**
-     * Refreshes token and stores new token in ./token/token.js
+     * Refreshes token and stores new token in the supplied tokenPath file
      * */
     refreshToken() {
         let options = {
@@ -245,7 +245,8 @@ class HCDevice {
     }
 
     getOnCharacteristicHandler(callback) {
-        this.log(`calling getOnCharacteristicHandler`, this.status);
+        // The following line was commented out because it clogged the log too much imo file.
+        // this.log(`calling getOnCharacteristicHandler`, this.status);
         callback(null, (this.status === Status.Running || this.status === Status.WakingUp));
     }
 
