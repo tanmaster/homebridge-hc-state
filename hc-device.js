@@ -65,11 +65,11 @@ class HCDevice {
         // Set up a homebridge service - a switch
         this.service = new Service.Switch(this.config.name);
 
-        // Run event stream processing
-        this.processEvents();
+        // Run event stream processing every 12 with a new token
+        setInterval(this.processEvents.bind(this), 1000 * 60 * 60 *12);
 
         // Refresh token every 12 hours starting from now
-        this.timer = setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 12);
+        setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 12);
         this.refreshToken()
 
     }
