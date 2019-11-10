@@ -66,7 +66,7 @@ class HCDevice {
         this.service = new Service.Switch(this.config.name);
 
         // Run event stream processing every 12 with a new token
-        setInterval(this.processEvents.bind(this), 1000 * 60 * 60 *12);
+        setInterval(this.processEvents.bind(this), 1000 * 60 * 60 * 12);
 
         // Refresh token every 12 hours starting from now
         setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 12);
