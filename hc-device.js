@@ -59,22 +59,23 @@ class HCDevice {
         // Read token file
         this.token = JSON.parse(fs.readFileSync(this.config.tokenPath));
 
-        // query current status and set it
-        this.refreshCurrentStatus();
-
         // Set up a homebridge service - a switch
         this.service = new Service.Switch(this.config.name);
+
+        this.refreshToken();
 
         // Run event stream processing every 12 with a new token
         setInterval(this.processEvents.bind(this), 1000 * 60 * 60 * 12);
 
         // Refresh token every 12 hours starting from now
         setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 12);
-        this.refreshToken()
 
     }
 
     processEvents() {
+        // query current status and set it
+        this.refreshCurrentStatus();
+
         let options = {
             method: "GET",
             headers: {
