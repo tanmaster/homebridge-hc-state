@@ -63,12 +63,12 @@ class HCDevice {
         this.service = new Service.Switch(this.config.name);
 
         this.refreshToken();
+        // Refresh token every 3 hours starting from now
+        setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 3);
 
-        // Run event stream processing every 12 with a new token
-        setInterval(this.processEvents.bind(this), 1000 * 60 * 60 * 12);
-
-        // Refresh token every 12 hours starting from now
-        setInterval(this.refreshToken.bind(this), 1000 * 60 * 60 * 12);
+        this.processEvents();
+        // Run event stream processing every 3 with a new token
+        setInterval(this.processEvents.bind(this), 1000 * 60 * 60 * 3);
 
     }
 
@@ -85,7 +85,10 @@ class HCDevice {
             }
         };
         let self = this;
-        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId + "/events", options)
+        request("https://api.home-connect.com/api/homeappliances/" + this.config.haId + "/events", options,
+            function (error) {
+                this.log("There was with the stream http request.")
+            })
             .on('response', (response) => {
                 this.log("Start listening to stream...")
             }).pipe(new Filter())
@@ -105,6 +108,7 @@ class HCDevice {
                     self.setStatus(Status.Running);
                 }
             });
+
     }
 
     setStatus(newStatus) {
